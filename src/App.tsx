@@ -20,7 +20,7 @@ import galleryPhoto10 from "../images/new/10.jpg";
 import galleryPhoto11 from "../images/new/11.jpg";
 import galleryPhoto12 from "../images/new/12.jpg";
 import galleryPhoto13 from "../images/new/13.jpg";
-import { WEDDING } from "./config/wedding";
+import { WEDDING, WEDDING_MUSIC } from "./config/wedding";
 import "./index.css";
 
 const COUPLE = {
@@ -31,6 +31,9 @@ const COUPLE = {
 function App() {
   const [currentPage, setCurrentPage] = useState(0);
   const [isInvitationOpen, setIsInvitationOpen] = useState(false);
+  const [audioUrl] = useState(
+    () => WEDDING_MUSIC[Math.floor(Math.random() * WEDDING_MUSIC.length)],
+  );
 
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
@@ -156,6 +159,28 @@ function App() {
     };
   }, [isInvitationOpen, sections.length]);
 
+  const navigateToSection = (index: number) => {
+    const container = containerRef.current;
+    const target = container?.querySelectorAll<HTMLElement>(".section")[index];
+    if (!container || !target) return;
+
+    isProgrammaticScrollingRef.current = true;
+    currentPageRef.current = index;
+    setCurrentPage(index);
+    target.scrollIntoView({ block: "start", behavior: "smooth" });
+
+    if (programmaticScrollTimeoutRef.current) {
+      clearTimeout(programmaticScrollTimeoutRef.current);
+    }
+    programmaticScrollTimeoutRef.current = setTimeout(() => {
+      // Async content can change section heights during the initial scroll.
+      if (Math.abs(target.getBoundingClientRect().top) > 1) {
+        target.scrollIntoView({ block: "start", behavior: "smooth" });
+      }
+      isProgrammaticScrollingRef.current = false;
+    }, 700);
+  };
+
   // Handle arrow keys
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -171,24 +196,7 @@ function App() {
       }
 
       e.preventDefault();
-      const container = containerRef.current;
-      const target = container?.querySelectorAll<HTMLElement>(".section")[
-        nextPage
-      ];
-
-      if (!container || !target) return;
-
-      isProgrammaticScrollingRef.current = true;
-      currentPageRef.current = nextPage;
-      setCurrentPage(nextPage);
-      container.scrollTo({ top: target.offsetTop, behavior: "smooth" });
-
-      if (programmaticScrollTimeoutRef.current) {
-        clearTimeout(programmaticScrollTimeoutRef.current);
-      }
-      programmaticScrollTimeoutRef.current = setTimeout(() => {
-        isProgrammaticScrollingRef.current = false;
-      }, 700);
+      navigateToSection(nextPage);
     };
 
     window.addEventListener("keydown", handleKeyDown);
@@ -246,9 +254,34 @@ function App() {
       {isInvitationOpen && (
         <>
           <MusicToggle
-            audioUrl="https://res.cloudinary.com/dvglujyon/video/upload/v1776915359/leduong_pys4qs.mp3"
+            audioUrl={audioUrl}
             shouldAutoPlay={isInvitationOpen}
           />
+          <nav
+            aria-label="Điều hướng thiệp cưới"
+            className="fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] left-1/2 z-40 grid w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 grid-cols-3 gap-2 rounded-2xl border border-white/80 bg-[#eadde2]/90 p-2 shadow-[0_8px_30px_rgba(74,18,36,0.18)] backdrop-blur-md"
+          >
+            {[
+              { label: "Lịch cưới", index: 3 },
+              { label: "Album", index: 2 },
+              { label: "Mừng cưới", index: 7 },
+            ].map(({ label, index }) => (
+              <button
+                key={label}
+                type="button"
+                aria-controls={`invitation-section-${index}`}
+                aria-current={currentPage === index ? "location" : undefined}
+                onClick={() => navigateToSection(index)}
+                className={`min-h-11 rounded-xl px-2 py-3 text-xs font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#741d35] sm:text-sm ${
+                  currentPage === index
+                    ? "bg-[#741d35] text-white"
+                    : "bg-[#fffafc] text-[#4a1224] hover:bg-white"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </nav>
         </>
       )}
 
@@ -269,10 +302,11 @@ function App() {
             display: none;
           }
         `}</style>
-        <div className="flex flex-col w-full h-full">
+        <div className="flex min-h-full w-full flex-col pb-[calc(6rem+env(safe-area-inset-bottom))]">
           {sections.map((section, idx) => (
             <div
               key={idx}
+              id={`invitation-section-${idx}`}
               className="section w-full flex-shrink-0"
             >
               {section}

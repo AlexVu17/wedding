@@ -69,8 +69,6 @@ a {
 
 .section {
   min-height: auto;
-  content-visibility: auto;
-  contain-intrinsic-size: 100svh;
 }
 
 .invitation-overlay {
@@ -111,7 +109,12 @@ a {
   animation: spin 2.5s linear infinite;
 }
 
-.music-button.paused::after {
+.music-button.playing {
+  background: var(--wine);
+  color: white;
+}
+
+.music-button.paused .music-icon::after {
   content: "";
   position: absolute;
   left: 50%;

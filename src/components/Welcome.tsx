@@ -38,7 +38,7 @@ export const Welcome = ({
       <div className="absolute inset-x-0 bottom-0 h-72 bg-gradient-to-t from-white/55 via-white/10 to-transparent" />
 
       <div className="relative z-10 mx-auto flex min-h-[calc(100svh-4rem)] w-full max-w-6xl items-end">
-        <div className={`max-w-[21rem] pb-3 transition-all duration-1000 sm:max-w-xl sm:pb-5 ${isVisible ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"}`}>
+        <div className={`max-w-[21rem] pb-24 transition-all duration-1000 sm:max-w-xl ${isVisible ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0"}`}>
           <div className="border-t border-[#8f0026]/30 pt-4 sm:pt-5">
             <div className="flex items-baseline gap-4">
               <span className="w-14 font-serif text-[10px] uppercase tracking-[0.3em] text-[#5d4a4d]">{groomAlias}</span>

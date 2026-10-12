@@ -1,3 +1,8 @@
+export const WEDDING_MUSIC = [
+  "https://res.cloudinary.com/dvglujyon/video/upload/v1776915359/leduong_pys4qs.mp3",
+  "https://res.cloudinary.com/dvglujyon/video/upload/v1791791915/Until_You_kfmejy.mp3",
+] as const;
+
 export const WEDDING = {
   groomName: "Bùi Diễn",
   brideName: "Ngọc Chinh",

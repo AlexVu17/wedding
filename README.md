@@ -117,10 +117,13 @@ fontFamily: {
 
 ### Âm Thanh Cưới
 
-Cập nhật URL âm thanh trong `App.tsx`:
+Cập nhật danh sách URL âm thanh trong `src/config/wedding.ts`. Mỗi lần mở trang, thiệp chọn ngẫu nhiên một bài và phát lặp lại; khách có thể bấm **Bật nhạc / Tắt nhạc** ở góc trên phải.
 
 ```tsx
-<MusicToggle audioUrl="https://your-music-link.mp3" />
+export const WEDDING_MUSIC = [
+  "https://your-music-link.mp3",
+  "https://another-music-link.mp3",
+] as const;
 ```
 
 ### Hình Ảnh

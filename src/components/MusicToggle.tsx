@@ -10,26 +10,26 @@ export const MusicToggle: React.FC<MusicToggleProps> = ({
   shouldAutoPlay = false,
 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const audioRef = useRef<HTMLAudioElement>(null);
+  const hasManualInteractionRef = useRef(false);
 
   const handleToggle = async () => {
     if (!audioRef.current) return;
+    hasManualInteractionRef.current = true;
+    setErrorMessage("");
 
     try {
-      if (isPlaying && !isMuted) {
+      if (!audioRef.current.paused) {
         audioRef.current.pause();
         setIsPlaying(false);
-      } else if (isPlaying && isMuted) {
-        audioRef.current.muted = false;
-        setIsMuted(false);
       } else {
         audioRef.current.muted = false;
-        setIsMuted(false);
         await audioRef.current.play();
         setIsPlaying(true);
       }
     } catch (err) {
+      setErrorMessage("Chưa phát được nhạc. Bạn bấm thử lại nhé.");
       console.error("Lỗi phát nhạc:", err);
     }
   };
@@ -39,34 +39,23 @@ export const MusicToggle: React.FC<MusicToggleProps> = ({
     if (!shouldAutoPlay || !audioRef.current) return;
 
     const tryAutoplay = async () => {
-      if (!audioRef.current) return;
+      if (!audioRef.current || hasManualInteractionRef.current) return;
       try {
         audioRef.current.muted = false;
         await audioRef.current.play();
-        setIsMuted(false);
-        setIsPlaying(true);
-      } catch (err) {
-        // If unmuted autoplay fails, try muted
-        try {
-          audioRef.current.muted = true;
-          await audioRef.current.play();
-          setIsMuted(true);
-          setIsPlaying(true);
-        } catch (err2) {
-          setIsPlaying(false);
-        }
+        window.removeEventListener("pointerdown", handleFirstInteraction);
+      } catch {
+        // The visible button lets guests start playback if autoplay is blocked.
       }
     };
 
     const handleFirstInteraction = async (event: Event) => {
-      if (!audioRef.current) return;
+      if (!audioRef.current || hasManualInteractionRef.current) return;
       const target = event.target as HTMLElement | null;
       if (target?.closest(".music-button")) return;
       try {
         audioRef.current.muted = false;
         await audioRef.current.play();
-        setIsMuted(false);
-        setIsPlaying(true);
         window.removeEventListener("pointerdown", handleFirstInteraction);
       } catch (err) {
         // ignore
@@ -91,30 +80,37 @@ export const MusicToggle: React.FC<MusicToggleProps> = ({
         loop
         preload="metadata"
         onPlay={() => setIsPlaying(true)}
-        onPause={() => {
+        onPause={() => setIsPlaying(false)}
+        onError={() => {
           setIsPlaying(false);
-          setIsMuted(false);
+          setErrorMessage("Chưa tải được nhạc. Bạn bấm thử lại nhé.");
         }}
       />
       <button
+        type="button"
         onClick={handleToggle}
-        className={`music-button fixed right-3 top-[max(0.75rem,env(safe-area-inset-top))] z-50 flex h-11 w-11 items-center justify-center rounded-full transition-all transform hover:scale-105 md:right-6 md:top-6 md:h-12 md:w-12 ${
-          isPlaying && !isMuted
-            ? "playing bg-burgundy text-white shadow-lg"
-            : "paused bg-white text-burgundy shadow-lg border-2 border-burgundy"
+        className={`music-button fixed right-3 top-[max(0.75rem,env(safe-area-inset-top))] z-50 flex min-h-11 items-center justify-center gap-2 rounded-full px-4 py-2 text-xs font-semibold transition hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#741d35] md:right-6 md:top-6 ${
+          isPlaying ? "playing" : "paused"
         }`}
-        title={isPlaying && !isMuted ? "Tắt nhạc" : "Bật nhạc"}
-        aria-pressed={isPlaying && !isMuted}
+        title={isPlaying ? "Tắt nhạc" : "Bật nhạc"}
+        aria-pressed={isPlaying}
       >
-        <svg
-          className="note w-4 h-4"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          aria-hidden
-        >
-          <path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z" />
-        </svg>
+        <span className="music-icon relative flex h-5 w-5 items-center justify-center" aria-hidden="true">
+          <svg
+            className="note w-4 h-4"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z" />
+          </svg>
+        </span>
+        <span>{isPlaying ? "Tắt nhạc" : "Bật nhạc"}</span>
       </button>
+      {errorMessage && (
+        <p role="status" className="fixed right-3 top-[calc(max(0.75rem,env(safe-area-inset-top))+3.25rem)] z-50 max-w-60 rounded-xl bg-[#fffdf9] px-3 py-2 text-xs text-[#741d35] shadow-lg md:right-6 md:top-20">
+          {errorMessage}
+        </p>
+      )}
     </>
   );
 };
