@@ -94,7 +94,7 @@ export const WeddingSchedule = ({
               <p className="relative mt-5 text-[9px] uppercase tracking-[0.5em] text-[#e7c98e]">
                 Thiệp cưới
               </p>
-              <p className="relative mt-3 font-sans text-4xl font-semibold tracking-[0.12em] text-[#fff1cf] sm:text-5xl">
+              <p className="relative mt-3 whitespace-nowrap font-sans text-[clamp(1.25rem,5.5vw,2.25rem)] font-semibold tracking-[0.12em] text-[#fff1cf] sm:text-5xl">
                 {WEDDING.dateDisplay}
               </p>
               <p className="relative mt-4 font-script text-2xl text-white/85 sm:text-3xl">
@@ -149,7 +149,7 @@ export const WeddingSchedule = ({
                             <dt className={`font-sans text-[10px] font-semibold uppercase tracking-[0.2em] ${accentColor}`}>
                               Thời gian
                             </dt>
-                            <dd className={`mt-1 font-sans text-base font-bold sm:text-lg ${titleColor}`}>
+                            <dd className={`mt-1 whitespace-nowrap font-sans text-base font-bold sm:text-lg ${titleColor}`}>
                               {event.date}
                             </dd>
                             <dd className="mt-1 font-sans text-xs font-medium text-[#756568]">

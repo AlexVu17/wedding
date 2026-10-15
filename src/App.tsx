@@ -233,7 +233,7 @@ function App() {
             <p className="relative my-1 font-script text-2xl text-[#b89258]">&</p>
             <h1 className="relative font-script text-5xl leading-none text-[#741d35] sm:text-6xl">{COUPLE.brideName}</h1>
             <div className="relative mx-auto my-6 h-px w-16 bg-[#b89258]/60 sm:my-8" />
-            <p className="relative font-serif text-lg font-semibold tracking-[0.16em] text-[#741d35] sm:text-xl">
+            <p className="relative whitespace-nowrap font-serif text-lg font-semibold tracking-[0.16em] text-[#741d35] sm:text-xl">
               {WEDDING.dateDisplay}
             </p>
             <p className="relative mt-3 text-[9px] uppercase tracking-[0.45em] text-[#a37d49]">

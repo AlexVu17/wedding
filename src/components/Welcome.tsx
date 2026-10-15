@@ -48,7 +48,7 @@ export const Welcome = ({
               <span className="w-14 font-serif text-[10px] uppercase tracking-[0.3em] text-[#5d4a4d]">{brideAlias}</span>
               <span className="font-script text-4xl text-[#8f0026] sm:text-6xl">{brideName}</span>
             </div>
-            <p className="mt-3 font-serif text-base italic text-[#8f0026] sm:text-lg">{weddingDate}</p>
+            <p className="mt-3 whitespace-nowrap font-serif text-base italic text-[#8f0026] sm:text-lg">{weddingDate}</p>
           </div>
         </div>
       </div>
